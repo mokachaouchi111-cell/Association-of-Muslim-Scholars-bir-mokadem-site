@@ -61,8 +61,6 @@
   };
 
   const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  const isValidPhoneDz = (phone) => /^0[567]\d{8}$/.test(phone);
-
   async function request(path, options = {}) {
     const headers = { "Content-Type": "application/json", ...(options.headers || {}) };
     if (options.auth && getAccessToken()) {
@@ -294,9 +292,6 @@
       const username = document.getElementById("regUsername").value.trim();
       const fullName = document.getElementById("regFullName").value.trim();
       const email = document.getElementById("regEmail").value.trim();
-      const rawPhone = document.getElementById("regPhone").value.trim();
-      const phone = rawPhone.replace(/\s+/g, "");
-      const role = document.getElementById("regRole").value;
       const password = document.getElementById("regPassword").value;
 
       if (!isValidEmail(email)) {
@@ -309,19 +304,13 @@
         return;
       }
 
-      if (phone && !isValidPhoneDz(phone)) {
-        setStatus(registerStatus, "رقم الهاتف غير صالح. استعمل رقمًا جزائريًا يبدأ بـ 05 أو 06 أو 07.");
-        return;
-      }
-
       setStatus(registerStatus, "جارٍ إنشاء الحساب...", true);
 
       const payload = {
         username,
         full_name: fullName,
         email,
-        phone,
-        role,
+        role: "student",
         password,
       };
 
