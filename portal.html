@@ -57,20 +57,8 @@
       <h2 class="section-title">تسجيل الدخول وإنشاء حساب</h2>
       <p class="section-sub">يمكنك الدخول مباشرة أو إنشاء حساب جديد. لا توجد إعدادات تقنية مطلوبة للمستخدم.</p>
 
-      <div class="portal-auth-grid">
-        <article class="card">
-          <h3>تسجيل الدخول</h3>
-          <form id="loginForm" class="portal-form">
-            <label class="portal-label" for="loginUsername">اسم المستخدم</label>
-            <input id="loginUsername" class="input" type="text" required />
-            <label class="portal-label" for="loginPassword">كلمة المرور</label>
-            <input id="loginPassword" class="input" type="password" required />
-            <button class="btn btn-primary" type="submit">دخول</button>
-          </form>
-          <p id="loginStatus" class="meta portal-status"></p>
-        </article>
-
-        <article class="card">
+      <div class="portal-auth-stack">
+        <article class="card portal-register-card">
           <h3>إنشاء حساب</h3>
           <form id="registerForm" class="portal-form">
             <label class="portal-label" for="regUsername">اسم المستخدم</label>
@@ -93,6 +81,18 @@
             <button class="btn btn-primary" type="submit">إنشاء الحساب</button>
           </form>
           <p id="registerStatus" class="meta portal-status"></p>
+        </article>
+
+        <article class="card portal-login-card">
+          <h3>لديك حساب؟ سجل الدخول</h3>
+          <form id="loginForm" class="portal-form">
+            <label class="portal-label" for="loginUsername">اسم المستخدم</label>
+            <input id="loginUsername" class="input" type="text" required />
+            <label class="portal-label" for="loginPassword">كلمة المرور</label>
+            <input id="loginPassword" class="input" type="password" required />
+            <button class="btn btn-primary" type="submit">دخول</button>
+          </form>
+          <p id="loginStatus" class="meta portal-status"></p>
         </article>
       </div>
     </section>
