@@ -679,3 +679,25 @@ textarea {
 .portal-dashboard {
   margin-top: 12px;
 }
+
+.portal-auth-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.portal-auth-grid .card {
+  height: 100%;
+}
+
+.portal-form .btn {
+  margin-top: 8px;
+  width: 100%;
+}
+
+@media (max-width: 980px) {
+  .portal-auth-grid {
+    grid-template-columns: 1fr;
+  }
+}

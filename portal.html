@@ -54,20 +54,10 @@
     </section>
 
     <section id="authSection" class="section">
-      <h2 class="section-title">تسجيل الدخول والإعداد</h2>
-      <p class="section-sub">الدخول يتم عبر JWT. يمكنك أيضًا إنشاء حساب جديد للتجربة. إعداد عنوان الخادم أدناه اختياري للإدارة فقط.</p>
+      <h2 class="section-title">تسجيل الدخول وإنشاء حساب</h2>
+      <p class="section-sub">يمكنك الدخول مباشرة أو إنشاء حساب جديد. لا توجد إعدادات تقنية مطلوبة للمستخدم.</p>
 
-      <div class="portal-grid">
-        <article class="card">
-          <h3>إعداد متقدم: عنوان API</h3>
-          <label class="portal-label" for="apiBaseInput">عنوان الخادم</label>
-          <input id="apiBaseInput" class="input" type="text" placeholder="http://127.0.0.1:8000" />
-          <div class="page-actions">
-            <button id="saveApiBaseBtn" class="btn btn-outline" type="button">حفظ العنوان</button>
-          </div>
-          <p id="apiStatus" class="meta portal-status"></p>
-        </article>
-
+      <div class="portal-auth-grid">
         <article class="card">
           <h3>تسجيل الدخول</h3>
           <form id="loginForm" class="portal-form">

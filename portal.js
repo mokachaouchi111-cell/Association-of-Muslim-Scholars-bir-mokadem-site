@@ -4,10 +4,6 @@
   const API_BASE_KEY = "portal_api_base";
   const DEFAULT_API_BASE = "https://association-api-2f1t.onrender.com";
 
-  const apiBaseInput = document.getElementById("apiBaseInput");
-  const apiStatus = document.getElementById("apiStatus");
-  const saveApiBaseBtn = document.getElementById("saveApiBaseBtn");
-
   const loginForm = document.getElementById("loginForm");
   const loginStatus = document.getElementById("loginStatus");
   const registerForm = document.getElementById("registerForm");
@@ -241,20 +237,9 @@
     renderGuardianDashboard(user);
   }
 
-  if (apiBaseInput) {
-    apiBaseInput.value = getApiBase();
-  }
-
-  if (saveApiBaseBtn) {
-    saveApiBaseBtn.addEventListener("click", () => {
-      const value = normalizeApiBase(apiBaseInput.value || "");
-      if (!value) {
-        setStatus(apiStatus, "الرجاء إدخال عنوان خادم صحيح.");
-        return;
-      }
-      localStorage.setItem(API_BASE_KEY, value);
-      setStatus(apiStatus, `تم حفظ عنوان الخادم: ${value}`, true);
-    });
+  // Ensure production API base exists for all users without manual setup.
+  if (!localStorage.getItem(API_BASE_KEY)) {
+    localStorage.setItem(API_BASE_KEY, DEFAULT_API_BASE);
   }
 
   if (loginForm) {
