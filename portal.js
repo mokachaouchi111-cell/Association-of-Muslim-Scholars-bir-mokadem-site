@@ -4,38 +4,65 @@
   const API_BASE_KEY = "portal_api_base";
   const DEFAULT_API_BASE = "https://association-api-2f1t.onrender.com";
 
-  const registerCard = document.getElementById("registerCard");
-  const loginCard = document.getElementById("loginCard");
-  const switchToLoginBtn = document.getElementById("switchToLoginBtn");
-  const switchToRegisterBtn = document.getElementById("switchToRegisterBtn");
-
   const loginForm = document.getElementById("loginForm");
   const loginStatus = document.getElementById("loginStatus");
+  const loginSubmitBtn = document.getElementById("loginSubmitBtn");
+
   const registerForm = document.getElementById("registerForm");
   const registerStatus = document.getElementById("registerStatus");
+  const registerSubmitBtn = document.getElementById("registerSubmitBtn");
+
+  const regNextBtn = document.getElementById("regNextBtn");
+  const regBackBtn = document.getElementById("regBackBtn");
+  const regEmailInput = document.getElementById("regEmail");
+  const regEmailField = document.getElementById("regEmailField");
+  const regEmailIndicator = document.getElementById("regEmailIndicator");
+  const regPasswordInput = document.getElementById("regPassword");
+  const regPasswordField = document.getElementById("regPasswordField");
+  const regPasswordIndicator = document.getElementById("regPasswordIndicator");
+  const regRoleInput = document.getElementById("regRole");
+  const roleCards = Array.from(document.querySelectorAll(".role-card"));
+  const stepPanels = Array.from(document.querySelectorAll(".portal-step"));
+  const stepDots = Array.from(document.querySelectorAll("[data-step-dot]"));
 
   const sessionInfo = document.getElementById("sessionInfo");
   const dashboardContainer = document.getElementById("dashboardContainer");
   const logoutBtn = document.getElementById("logoutBtn");
 
+  let currentStep = 1;
+
+  const getApiBase = () => {
+    const base = localStorage.getItem(API_BASE_KEY) || DEFAULT_API_BASE;
+    return base.trim().replace(/\/+$/, "").replace(/\/api$/, "");
+  };
   const getAccessToken = () => localStorage.getItem(ACCESS_KEY);
   const getRefreshToken = () => localStorage.getItem(REFRESH_KEY);
-  const getApiBaseRaw = () => localStorage.getItem(API_BASE_KEY) || DEFAULT_API_BASE;
 
-  const normalizeApiBase = (value) => {
-    let base = (value || "").trim().replace(/\/+$/, "");
-    if (base.endsWith("/api")) {
-      base = base.slice(0, -4);
-    }
-    return base;
-  };
-
-  const getApiBase = () => normalizeApiBase(getApiBaseRaw());
+  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const setStatus = (el, msg, ok = false) => {
     if (!el) return;
     el.textContent = msg || "";
-    el.style.color = ok ? "#1f7a4a" : "#9e2b2b";
+    el.style.color = ok ? "#1f7a4a" : "#a03030";
+  };
+
+  const setIndicatorState = (field, indicator, state) => {
+    if (!field || !indicator) return;
+    field.classList.remove("is-valid", "is-invalid");
+    indicator.textContent = "";
+    if (state === "valid") {
+      field.classList.add("is-valid");
+      indicator.textContent = "✓";
+    } else if (state === "invalid") {
+      field.classList.add("is-invalid");
+      indicator.textContent = "✕";
+    }
+  };
+
+  const setButtonLoading = (btn, loading) => {
+    if (!btn) return;
+    btn.disabled = loading;
+    btn.classList.toggle("is-loading", loading);
   };
 
   const setTokens = (access, refresh) => {
@@ -48,19 +75,19 @@
     localStorage.removeItem(REFRESH_KEY);
   };
 
-  const showLogin = () => {
-    registerCard?.classList.add("hidden");
-    loginCard?.classList.remove("hidden");
-    setStatus(registerStatus, "");
+  const goToStep = (stepNumber) => {
+    currentStep = stepNumber;
+    stepPanels.forEach((panel) => {
+      const panelStep = Number(panel.dataset.step || "1");
+      panel.classList.toggle("active", panelStep === stepNumber);
+    });
+    stepDots.forEach((dot) => {
+      const dotStep = Number(dot.dataset.stepDot || "1");
+      dot.classList.toggle("active", dotStep === stepNumber);
+      dot.classList.toggle("done", dotStep < stepNumber);
+    });
   };
 
-  const showRegister = () => {
-    loginCard?.classList.add("hidden");
-    registerCard?.classList.remove("hidden");
-    setStatus(loginStatus, "");
-  };
-
-  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   async function request(path, options = {}) {
     const headers = { "Content-Type": "application/json", ...(options.headers || {}) };
     if (options.auth && getAccessToken()) {
@@ -261,13 +288,71 @@
     localStorage.setItem(API_BASE_KEY, DEFAULT_API_BASE);
   }
 
-  switchToLoginBtn?.addEventListener("click", showLogin);
-  switchToRegisterBtn?.addEventListener("click", showRegister);
+  roleCards.forEach((card) => {
+    card.addEventListener("click", () => {
+      roleCards.forEach((c) => c.classList.remove("active"));
+      card.classList.add("active");
+      if (regRoleInput) {
+        regRoleInput.value = card.dataset.role || "student";
+      }
+    });
+  });
+
+  regEmailInput?.addEventListener("blur", () => {
+    if (!regEmailInput.value.trim()) {
+      setIndicatorState(regEmailField, regEmailIndicator, "");
+      return;
+    }
+    setIndicatorState(
+      regEmailField,
+      regEmailIndicator,
+      isValidEmail(regEmailInput.value.trim()) ? "valid" : "invalid"
+    );
+  });
+
+  regPasswordInput?.addEventListener("blur", () => {
+    if (!regPasswordInput.value) {
+      setIndicatorState(regPasswordField, regPasswordIndicator, "");
+      return;
+    }
+    setIndicatorState(
+      regPasswordField,
+      regPasswordIndicator,
+      regPasswordInput.value.length >= 6 ? "valid" : "invalid"
+    );
+  });
+
+  regNextBtn?.addEventListener("click", () => {
+    const username = document.getElementById("regUsername").value.trim();
+    const fullName = document.getElementById("regFullName").value.trim();
+    const email = regEmailInput.value.trim();
+
+    if (!username || !fullName || !email) {
+      setStatus(registerStatus, "يرجى ملء كل الحقول في الخطوة الأولى.");
+      return;
+    }
+    if (!isValidEmail(email)) {
+      setIndicatorState(regEmailField, regEmailIndicator, "invalid");
+      setStatus(registerStatus, "صيغة البريد الإلكتروني غير صحيحة.");
+      return;
+    }
+
+    setIndicatorState(regEmailField, regEmailIndicator, "valid");
+    setStatus(registerStatus, "", true);
+    goToStep(2);
+  });
+
+  regBackBtn?.addEventListener("click", () => {
+    setStatus(registerStatus, "");
+    goToStep(1);
+  });
 
   if (loginForm) {
     loginForm.addEventListener("submit", async (event) => {
       event.preventDefault();
+      setButtonLoading(loginSubmitBtn, true);
       setStatus(loginStatus, "جارٍ تسجيل الدخول...", true);
+
       const username = document.getElementById("loginUsername").value.trim();
       const password = document.getElementById("loginPassword").value;
 
@@ -281,6 +366,8 @@
         await loadSession();
       } catch (err) {
         setStatus(loginStatus, `فشل تسجيل الدخول: ${err.message}`);
+      } finally {
+        setButtonLoading(loginSubmitBtn, false);
       }
     });
   }
@@ -291,48 +378,66 @@
 
       const username = document.getElementById("regUsername").value.trim();
       const fullName = document.getElementById("regFullName").value.trim();
-      const email = document.getElementById("regEmail").value.trim();
-      const password = document.getElementById("regPassword").value;
+      const email = regEmailInput.value.trim();
+      const role = regRoleInput.value || "student";
+      const password = regPasswordInput.value;
 
+      if (!username || !fullName || !email || !password) {
+        setStatus(registerStatus, "يرجى إكمال جميع الحقول المطلوبة.");
+        return;
+      }
       if (!isValidEmail(email)) {
-        setStatus(registerStatus, "البريد الإلكتروني غير صالح. يجب أن يحتوي على @.");
+        setIndicatorState(regEmailField, regEmailIndicator, "invalid");
+        setStatus(registerStatus, "البريد الإلكتروني يجب أن يحتوي على @ وبصيغة صحيحة.");
         return;
       }
-
       if (password.length < 6) {
-        setStatus(registerStatus, "كلمة المرور يجب أن تكون 6 أحرف على الأقل.");
+        setIndicatorState(regPasswordField, regPasswordIndicator, "invalid");
+        setStatus(registerStatus, "كلمة المرور يجب ألا تقل عن 6 أحرف.");
         return;
       }
 
+      setIndicatorState(regEmailField, regEmailIndicator, "valid");
+      setIndicatorState(regPasswordField, regPasswordIndicator, "valid");
+
+      setButtonLoading(registerSubmitBtn, true);
       setStatus(registerStatus, "جارٍ إنشاء الحساب...", true);
 
-      const payload = {
-        username,
-        full_name: fullName,
-        email,
-        role: "student",
-        password,
-      };
-
       try {
-        await request("/api/auth/register/", { method: "POST", body: payload });
-        setStatus(registerStatus, "تم إنشاء الحساب. يمكنك تسجيل الدخول الآن.", true);
+        await request("/api/auth/register/", {
+          method: "POST",
+          body: {
+            username,
+            full_name: fullName,
+            email,
+            role,
+            password,
+          },
+        });
         registerForm.reset();
-        showLogin();
+        if (regRoleInput) regRoleInput.value = "student";
+        roleCards.forEach((c) => c.classList.remove("active"));
+        roleCards[0]?.classList.add("active");
+        setIndicatorState(regEmailField, regEmailIndicator, "");
+        setIndicatorState(regPasswordField, regPasswordIndicator, "");
+        setStatus(registerStatus, "تم إنشاء الحساب بنجاح. يمكنك تسجيل الدخول الآن.", true);
+        goToStep(1);
+        document.getElementById("loginUsername")?.focus();
       } catch (err) {
         setStatus(registerStatus, `فشل إنشاء الحساب: ${err.message}`);
+      } finally {
+        setButtonLoading(registerSubmitBtn, false);
       }
     });
   }
 
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
-      clearSession();
-      sessionInfo.textContent = "تم تسجيل الخروج.";
-      dashboardContainer.innerHTML = "";
-      logoutBtn.classList.add("hidden");
-    });
-  }
+  logoutBtn?.addEventListener("click", () => {
+    clearSession();
+    sessionInfo.textContent = "تم تسجيل الخروج.";
+    dashboardContainer.innerHTML = "";
+    logoutBtn.classList.add("hidden");
+  });
 
+  goToStep(1);
   loadSession();
 })();

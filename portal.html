@@ -8,7 +8,7 @@
   <script src="scripts.js" defer></script>
   <script src="portal.js" defer></script>
 </head>
-<body>
+<body class="portal-page">
   <div class="site-shell">
     <header class="site-header">
       <div class="header-top">
@@ -54,37 +54,90 @@
     </section>
 
     <section id="authSection" class="section">
-      <h2 class="section-title">تسجيل الدخول وإنشاء حساب</h2>
-      <p class="section-sub">يمكنك الدخول مباشرة أو إنشاء حساب جديد. لا توجد إعدادات تقنية مطلوبة للمستخدم.</p>
+      <h2 class="section-title portal-title">تسجيل الدخول وإنشاء حساب</h2>
+      <p class="section-sub portal-subtitle">تجربة بسيطة وسريعة: أنشئ حسابك على خطوتين، ثم ادخل مباشرة.</p>
 
-      <div class="portal-auth-stack">
+      <div class="portal-auth-shell">
         <article id="registerCard" class="card portal-register-card">
-          <h3>إنشاء حساب</h3>
-          <form id="registerForm" class="portal-form">
-            <label class="portal-label" for="regUsername">اسم المستخدم</label>
-            <input id="regUsername" class="input" type="text" required />
-            <label class="portal-label" for="regFullName">الاسم الكامل</label>
-            <input id="regFullName" class="input" type="text" required />
-            <label class="portal-label" for="regEmail">البريد الإلكتروني</label>
-            <input id="regEmail" class="input" type="email" required />
-            <label class="portal-label" for="regPassword">كلمة المرور</label>
-            <input id="regPassword" class="input" type="password" minlength="6" required />
-            <button class="btn btn-primary" type="submit">إنشاء الحساب</button>
+          <h3>إنشاء حساب جديد</h3>
+          <div class="portal-stepper" aria-hidden="true">
+            <span class="step-pill active" data-step-dot="1">1</span>
+            <span class="step-line"></span>
+            <span class="step-pill" data-step-dot="2">2</span>
+          </div>
+
+          <form id="registerForm" class="portal-form" novalidate>
+            <div class="portal-step active" data-step="1">
+              <div class="float-field">
+                <input id="regUsername" class="input" type="text" placeholder=" " required />
+                <label for="regUsername">اسم المستخدم</label>
+              </div>
+
+              <div class="float-field">
+                <input id="regFullName" class="input" type="text" placeholder=" " required />
+                <label for="regFullName">الاسم الكامل</label>
+              </div>
+
+              <div id="regEmailField" class="float-field">
+                <input id="regEmail" class="input" type="email" placeholder=" " required />
+                <label for="regEmail">البريد الإلكتروني</label>
+                <span id="regEmailIndicator" class="field-indicator" aria-hidden="true"></span>
+              </div>
+
+              <button id="regNextBtn" class="btn btn-primary" type="button">التالي</button>
+            </div>
+
+            <div class="portal-step" data-step="2">
+              <div class="portal-role-picker">
+                <button type="button" class="role-card active" data-role="student">
+                  <span class="role-icon">📘</span>
+                  <span class="role-name">طالب</span>
+                </button>
+                <button type="button" class="role-card" data-role="teacher">
+                  <span class="role-icon">✒️</span>
+                  <span class="role-name">أستاذ</span>
+                </button>
+                <button type="button" class="role-card" data-role="admin">
+                  <span class="role-icon">🏛️</span>
+                  <span class="role-name">إدارة</span>
+                </button>
+              </div>
+              <input id="regRole" type="hidden" value="student" />
+
+              <div id="regPasswordField" class="float-field">
+                <input id="regPassword" class="input" type="password" minlength="6" placeholder=" " required />
+                <label for="regPassword">كلمة المرور</label>
+                <span id="regPasswordIndicator" class="field-indicator" aria-hidden="true"></span>
+              </div>
+
+              <div class="portal-step-actions">
+                <button id="regBackBtn" class="btn btn-outline" type="button">رجوع</button>
+                <button id="registerSubmitBtn" class="btn btn-primary" type="submit">
+                  <span class="btn-label">إنشاء الحساب</span>
+                  <span class="btn-spinner" aria-hidden="true"></span>
+                </button>
+              </div>
+            </div>
           </form>
-          <button id="switchToLoginBtn" class="portal-switch-btn" type="button">لديك حساب بالفعل؟ تسجيل الدخول</button>
           <p id="registerStatus" class="meta portal-status"></p>
         </article>
 
-        <article id="loginCard" class="card portal-login-card hidden">
-          <h3>لديك حساب؟ سجل الدخول</h3>
-          <form id="loginForm" class="portal-form">
-            <label class="portal-label" for="loginUsername">اسم المستخدم</label>
-            <input id="loginUsername" class="input" type="text" required />
-            <label class="portal-label" for="loginPassword">كلمة المرور</label>
-            <input id="loginPassword" class="input" type="password" required />
-            <button class="btn btn-primary" type="submit">دخول</button>
+        <article id="loginCard" class="card portal-login-card">
+          <h3>لديك حساب بالفعل؟ سجل الدخول</h3>
+          <form id="loginForm" class="portal-form" novalidate>
+            <div class="float-field">
+              <input id="loginUsername" class="input" type="text" placeholder=" " required />
+              <label for="loginUsername">اسم المستخدم</label>
+            </div>
+            <div class="float-field">
+              <input id="loginPassword" class="input" type="password" placeholder=" " required />
+              <label for="loginPassword">كلمة المرور</label>
+            </div>
+            <button id="loginSubmitBtn" class="btn btn-primary" type="submit">
+              <span class="btn-label">دخول</span>
+              <span class="btn-spinner" aria-hidden="true"></span>
+            </button>
           </form>
-          <button id="switchToRegisterBtn" class="portal-switch-btn" type="button">ليس لديك حساب؟ إنشاء حساب</button>
           <p id="loginStatus" class="meta portal-status"></p>
         </article>
       </div>
