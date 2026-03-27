@@ -31,3 +31,19 @@ Copy-Item .env.example .env
 
 The portal uses `http://127.0.0.1:8000` by default.
 You can change it from the portal settings UI.
+
+## Fully Independent Deployment (No Local PC Needed)
+
+### Frontend (already on Netlify)
+- Site URL: `https://aquamarine-paletas-91c9a5.netlify.app`
+
+### Backend on Render (recommended)
+- This repo includes `render.yaml` for one-click deployment.
+- In Render, create a **Blueprint** from this repository.
+- Render will provision:
+  - PostgreSQL database (`association-db`)
+  - Django API service (`association-api`)
+- Health endpoint: `/healthz/`
+
+After deploy, set portal API base in `/portal.html` to:
+- `https://<your-render-service>.onrender.com`

@@ -1,0 +1,36 @@
+databases:
+  - name: association-db
+    databaseName: association_db
+    user: association_user
+    plan: free
+
+services:
+  - type: web
+    name: association-api
+    runtime: python
+    rootDir: backend
+    plan: free
+    autoDeploy: true
+    healthCheckPath: /healthz/
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py collectstatic --noinput
+      python manage.py migrate
+    startCommand: gunicorn config.wsgi:application
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.2
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: false
+      - key: DJANGO_ALLOWED_HOSTS
+        value: .onrender.com
+      - key: CORS_ALLOW_ALL_ORIGINS
+        value: false
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://aquamarine-paletas-91c9a5.netlify.app
+      - key: DATABASE_URL
+        fromDatabase:
+          name: association-db
+          property: connectionString
