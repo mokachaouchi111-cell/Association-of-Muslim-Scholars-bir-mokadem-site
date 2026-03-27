@@ -1,0 +1,38 @@
+# Python / Django
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.db
+
+# Virtual environments
+.venv/
+venv/
+backend/.venv/
+
+# Environment files
+.env
+backend/.env
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Unrelated workspace folders (not part of this website project)
+.dist/
+BOT-TG/
+CODEX/
+CODEXBACC-BOT/
+HACK/
+my goals/
+netlify-deploy/
+supabase_setup.sql
+
+# Large local files
+*.pdf
+*.mov
+*.zip

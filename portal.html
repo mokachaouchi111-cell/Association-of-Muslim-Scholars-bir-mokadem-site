@@ -1,0 +1,148 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>بوابة المستخدمين – جمعية العلماء المسلمين الجزائريين</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="scripts.js" defer></script>
+  <script src="portal.js" defer></script>
+</head>
+<body>
+  <div class="site-shell">
+    <header class="site-header">
+      <div class="header-top">
+        <div class="brand">
+          <div class="logo-mark"><img src="assets/logo.png" alt="شعار الجمعية" /></div>
+          <div>
+            <h1 class="brand-name">جمعية العلماء المسلمين الجزائريين</h1>
+            <p class="brand-sub">شعبة بئرمقدم – ولاية تبسة</p>
+          </div>
+        </div>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="siteNav">القائمة</button>
+      </div>
+      <nav id="siteNav" class="site-nav">
+        <a href="index.html">الرئيسية</a>
+        <a href="about.html">من نحن</a>
+        <a href="activities.html">النشاطات</a>
+        <a href="schools.html">المدارس القرآنية</a>
+        <a href="news.html">الأخبار</a>
+        <a href="library.html">المكتبة</a>
+        <a href="gallery.html">معرض الصور</a>
+        <a class="active" href="portal.html">البوابة</a>
+        <a href="contact.html">اتصل بنا</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div class="hero-inner">
+        <div>
+          <h2 class="hero-title">بوابة المستخدمين</h2>
+          <p class="hero-text">سجّل الدخول بحسابك للوصول إلى لوحة الطالب أو الأستاذ أو الإداري، ومتابعة الحضور، التقييمات، ونظام النقاط بشكل مباشر.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#authSection">ابدأ الآن</a>
+            <a class="btn btn-ghost" href="index.html">العودة للرئيسية</a>
+          </div>
+        </div>
+        <div class="hero-ornament">
+          <h3 style="margin:0 0 10px;font-family:'Amiri',serif;">ملاحظة تشغيل</h3>
+          <p style="margin:0;line-height:1.9;color:rgba(255,255,255,0.88);">
+            تأكد من تشغيل الخادم الخلفي على <code>http://127.0.0.1:8000</code> أو حدّد عنوان API من الإعدادات أدناه.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="authSection" class="section">
+      <h2 class="section-title">تسجيل الدخول والإعداد</h2>
+      <p class="section-sub">الدخول يتم عبر JWT. يمكنك أيضًا إنشاء حساب جديد للتجربة.</p>
+
+      <div class="portal-grid">
+        <article class="card">
+          <h3>إعداد عنوان API</h3>
+          <label class="portal-label" for="apiBaseInput">عنوان الخادم</label>
+          <input id="apiBaseInput" class="input" type="text" placeholder="http://127.0.0.1:8000" />
+          <div class="page-actions">
+            <button id="saveApiBaseBtn" class="btn btn-outline" type="button">حفظ العنوان</button>
+          </div>
+          <p id="apiStatus" class="meta portal-status"></p>
+        </article>
+
+        <article class="card">
+          <h3>تسجيل الدخول</h3>
+          <form id="loginForm" class="portal-form">
+            <label class="portal-label" for="loginUsername">اسم المستخدم</label>
+            <input id="loginUsername" class="input" type="text" required />
+            <label class="portal-label" for="loginPassword">كلمة المرور</label>
+            <input id="loginPassword" class="input" type="password" required />
+            <button class="btn btn-primary" type="submit">دخول</button>
+          </form>
+          <p id="loginStatus" class="meta portal-status"></p>
+        </article>
+
+        <article class="card">
+          <h3>إنشاء حساب</h3>
+          <form id="registerForm" class="portal-form">
+            <label class="portal-label" for="regUsername">اسم المستخدم</label>
+            <input id="regUsername" class="input" type="text" required />
+            <label class="portal-label" for="regFullName">الاسم الكامل</label>
+            <input id="regFullName" class="input" type="text" required />
+            <label class="portal-label" for="regEmail">البريد الإلكتروني</label>
+            <input id="regEmail" class="input" type="email" required />
+            <label class="portal-label" for="regPhone">الهاتف</label>
+            <input id="regPhone" class="input" type="text" />
+            <label class="portal-label" for="regRole">نوع الحساب</label>
+            <select id="regRole" class="input" required>
+              <option value="student">طالب</option>
+              <option value="teacher">أستاذ</option>
+              <option value="admin">إداري</option>
+              <option value="guardian">ولي أمر</option>
+            </select>
+            <label class="portal-label" for="regPassword">كلمة المرور</label>
+            <input id="regPassword" class="input" type="password" minlength="8" required />
+            <button class="btn btn-primary" type="submit">إنشاء الحساب</button>
+          </form>
+          <p id="registerStatus" class="meta portal-status"></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="portal-head">
+        <div>
+          <h2 class="section-title">لوحة المستخدم</h2>
+          <p id="sessionInfo" class="section-sub">غير مسجّل الدخول</p>
+        </div>
+        <button id="logoutBtn" class="btn btn-outline hidden" type="button">تسجيل خروج</button>
+      </div>
+      <div id="dashboardContainer" class="portal-dashboard"></div>
+    </section>
+
+    <footer class="site-footer">
+      <div class="footer-grid">
+        <div>
+          <h3 class="footer-title">جمعية العلماء المسلمين الجزائريين</h3>
+          <p style="margin:0;color:rgba(255,255,255,0.8);">شعبة بئرمقدم – ولاية تبسة</p>
+        </div>
+        <div>
+          <h4 class="footer-title">روابط سريعة</h4>
+          <div class="footer-links">
+            <a href="about.html">من نحن</a>
+            <a href="activities.html">النشاطات</a>
+            <a href="news.html">الأخبار</a>
+            <a href="contact.html">اتصل بنا</a>
+          </div>
+        </div>
+        <div>
+          <h4 class="footer-title">التواصل الاجتماعي</h4>
+          <div class="footer-links">
+            <a href="https://www.facebook.com/sh.bt.byrmqdm/followers" target="_blank" rel="noopener">فيسبوك</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">© جميع الحقوق محفوظة — جمعية العلماء المسلمين الجزائريين – شعبة بئرمقدم – ولاية تبسة</div>
+    </footer>
+  </div>
+</body>
+</html>
+

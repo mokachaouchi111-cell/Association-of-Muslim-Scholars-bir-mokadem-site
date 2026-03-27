@@ -1,0 +1,116 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>معرض الصور – جمعية العلماء المسلمين الجزائريين</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="scripts.js" defer></script>
+</head>
+<body>
+  <div class="site-shell">
+    <header class="site-header">
+      <div class="header-top">
+        <div class="brand">
+          <div class="logo-mark"><img src="assets/logo.png" alt="شعار الجمعية" /></div>
+          <div>
+            <h1 class="brand-name">جمعية العلماء المسلمين الجزائريين</h1>
+            <p class="brand-sub">شعبة بئرمقدم – ولاية تبسة</p>
+          </div>
+        </div>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="siteNav">القائمة</button>
+      </div>
+      <nav id="siteNav" class="site-nav">
+        <a href="index.html">الرئيسية</a>
+        <a href="about.html">من نحن</a>
+        <a href="activities.html">النشاطات</a>
+        <a href="schools.html">المدارس القرآنية</a>
+        <a href="news.html">الأخبار</a>
+        <a href="library.html">المكتبة</a>
+        <a class="active" href="gallery.html">معرض الصور</a>
+        <a href="portal.html">البوابة</a>
+        <a href="contact.html">اتصل بنا</a>
+      </nav>
+    </header>
+
+    <section class="section">
+      <h2 class="section-title">معرض الصور</h2>
+      <p class="section-sub">شبكة متجاوبة لصور الأنشطة والملتقيات والمساجد مع إمكانية التكبير.</p>
+      <div class="gallery-grid">
+        <div class="gallery-item">
+          <div class="gallery-thumb">حلقة قرآن</div>
+          <div class="gallery-cap">
+            لقاء تحفيظ صباحي
+            <div class="page-actions">
+              <button class="btn btn-outline" type="button" data-lightbox data-image="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='720' height='420'%3E%3Crect width='100%25' height='100%25' fill='%23f7f5ef'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Amiri' font-size='32' fill='%230f5132'%3E%D8%AD%D9%84%D9%82%D8%A9%20%D9%82%D8%B1%D8%A2%D9%86%3C/text%3E%3C/svg%3E" data-caption="لقاء تحفيظ صباحي">تكبير</button>
+            </div>
+          </div>
+        </div>
+        <div class="gallery-item">
+          <div class="gallery-thumb">محاضرة</div>
+          <div class="gallery-cap">
+            محاضرة تربوية للشباب
+            <div class="page-actions">
+              <button class="btn btn-outline" type="button" data-lightbox data-image="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='720' height='420'%3E%3Crect width='100%25' height='100%25' fill='%23f7f5ef'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Amiri' font-size='32' fill='%230f5132'%3E%D9%85%D8%AD%D8%A7%D8%B6%D8%B1%D8%A9%3C/text%3E%3C/svg%3E" data-caption="محاضرة تربوية للشباب">تكبير</button>
+            </div>
+          </div>
+        </div>
+        <div class="gallery-item">
+          <div class="gallery-thumb">ملتقى</div>
+          <div class="gallery-cap">
+            ملتقى علمي محلي
+            <div class="page-actions">
+              <button class="btn btn-outline" type="button" data-lightbox data-image="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='720' height='420'%3E%3Crect width='100%25' height='100%25' fill='%23f7f5ef'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Amiri' font-size='32' fill='%230f5132'%3E%D9%85%D9%84%D8%AA%D9%82%D9%89%3C/text%3E%3C/svg%3E" data-caption="ملتقى علمي محلي">تكبير</button>
+            </div>
+          </div>
+        </div>
+        <div class="gallery-item">
+          <div class="gallery-thumb">مسجد</div>
+          <div class="gallery-cap">
+            نشاطات داخل المسجد
+            <div class="page-actions">
+              <button class="btn btn-outline" type="button" data-lightbox data-image="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='720' height='420'%3E%3Crect width='100%25' height='100%25' fill='%23f7f5ef'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Amiri' font-size='32' fill='%230f5132'%3E%D9%85%D8%B3%D8%AC%D8%AF%3C/text%3E%3C/svg%3E" data-caption="نشاطات داخل المسجد">تكبير</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="lightbox" class="lightbox" aria-hidden="true">
+      <div class="lightbox-inner">
+        <button class="lightbox-close" type="button">إغلاق</button>
+        <img id="lightboxImg" alt="" />
+        <p id="lightboxCap" class="meta" style="margin-top:10px;"></p>
+      </div>
+    </div>
+
+    <footer class="site-footer">
+      <div class="footer-grid">
+        <div>
+          <h3 class="footer-title">جمعية العلماء المسلمين الجزائريين</h3>
+          <p style="margin:0;color:rgba(255,255,255,0.8);">شعبة بئرمقدم – ولاية تبسة</p>
+        </div>
+        <div>
+          <h4 class="footer-title">روابط سريعة</h4>
+          <div class="footer-links">
+            <a href="news.html">الأخبار</a>
+            <a href="library.html">المكتبة</a>
+            <a href="contact.html">اتصل بنا</a>
+          </div>
+        </div>
+        <div>
+          <h4 class="footer-title">التواصل الاجتماعي</h4>
+          <div class="footer-links">
+            <a href="https://www.facebook.com/sh.bt.byrmqdm/followers" target="_blank" rel="noopener">فيسبوك</a>
+            <a href="#"></a>
+            <a href="#"></a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">© جميع الحقوق محفوظة — جمعية العلماء المسلمين الجزائريين – شعبة بئرمقدم – ولاية تبسة</div>
+    </footer>
+  </div>
+</body>
+</html>
+
+
