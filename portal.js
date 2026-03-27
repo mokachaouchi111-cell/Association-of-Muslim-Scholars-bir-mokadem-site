@@ -2,7 +2,7 @@
   const ACCESS_KEY = "portal_access_token";
   const REFRESH_KEY = "portal_refresh_token";
   const API_BASE_KEY = "portal_api_base";
-  const DEFAULT_API_BASE = "http://127.0.0.1:8000";
+  const DEFAULT_API_BASE = "https://association-api-2f1t.onrender.com";
 
   const apiBaseInput = document.getElementById("apiBaseInput");
   const apiStatus = document.getElementById("apiStatus");
