@@ -17,9 +17,19 @@
   const dashboardContainer = document.getElementById("dashboardContainer");
   const logoutBtn = document.getElementById("logoutBtn");
 
-  const getApiBase = () => localStorage.getItem(API_BASE_KEY) || DEFAULT_API_BASE;
   const getAccessToken = () => localStorage.getItem(ACCESS_KEY);
   const getRefreshToken = () => localStorage.getItem(REFRESH_KEY);
+  const getApiBaseRaw = () => localStorage.getItem(API_BASE_KEY) || DEFAULT_API_BASE;
+
+  const normalizeApiBase = (value) => {
+    let base = (value || "").trim().replace(/\/+$/, "");
+    if (base.endsWith("/api")) {
+      base = base.slice(0, -4);
+    }
+    return base;
+  };
+
+  const getApiBase = () => normalizeApiBase(getApiBaseRaw());
 
   const setStatus = (el, msg, ok = false) => {
     if (!el) return;
@@ -42,20 +52,23 @@
     if (options.auth && getAccessToken()) {
       headers.Authorization = `Bearer ${getAccessToken()}`;
     }
+
     const response = await fetch(`${getApiBase()}${path}`, {
       method: options.method || "GET",
       headers,
       body: options.body ? JSON.stringify(options.body) : undefined,
     });
+
     const text = await response.text();
     let data = null;
     if (text) {
       try {
         data = JSON.parse(text);
-      } catch (_) {
+      } catch {
         data = { detail: text };
       }
     }
+
     if (!response.ok) {
       const detail = (data && (data.detail || JSON.stringify(data))) || "Request failed";
       throw new Error(detail);
@@ -73,7 +86,7 @@
       });
       localStorage.setItem(ACCESS_KEY, data.access);
       return true;
-    } catch (_) {
+    } catch {
       clearSession();
       return false;
     }
@@ -91,13 +104,13 @@
     return items
       .map(
         (item) => `
-        <article class="card">
-          <span class="tag">${item.tag}</span>
-          <h3>${item.title}</h3>
-          <p class="meta">${item.meta}</p>
-          <p>${item.body}</p>
-        </article>
-      `
+          <article class="card">
+            <span class="tag">${item.tag}</span>
+            <h3>${item.title}</h3>
+            <p class="meta">${item.meta}</p>
+            <p>${item.body}</p>
+          </article>
+        `
       )
       .join("");
   }
@@ -105,7 +118,6 @@
   async function renderStudentDashboard(user) {
     let dashboard = null;
     let logs = [];
-
     try {
       dashboard = await request("/api/dashboard/student/", { auth: true });
     } catch (err) {
@@ -115,24 +127,24 @@
 
     try {
       logs = await request("/api/wird-logs/?ordering=-log_date", { auth: true });
-    } catch (_) {
+    } catch {
       logs = [];
     }
 
     const cards = [
       {
         tag: "التقدم",
-        title: "نقاطك الحالية",
+        title: "النقاط الحالية",
         meta: `إجمالي النقاط: ${dashboard.total_points}`,
-        body: `عدد أيام الورد المسجّلة: ${dashboard.total_logs} | حضور مؤكد: ${dashboard.attendance_present}`,
+        body: `أيام الورد المسجلة: ${dashboard.total_logs} | الحضور: ${dashboard.attendance_present}`,
       },
       {
-        tag: "الورد اليومي",
-        title: "آخر سجل ورد",
+        tag: "الورد",
+        title: "آخر سجل يومي",
         meta: logs[0] ? `تاريخ: ${logs[0].log_date}` : "لا يوجد سجل بعد",
         body: logs[0]
-          ? `المستهدف: ${logs[0].target_ayat} آية | المنجز: ${logs[0].completed_ayat} آية | مراجعة: ${logs[0].review_ayat} آية`
-          : "ابدأ بإضافة الورد اليومي من واجهة التطبيقات أو لوحة الإدارة.",
+          ? `المستهدف: ${logs[0].target_ayat} | المنجز: ${logs[0].completed_ayat} | المراجعة: ${logs[0].review_ayat}`
+          : "أضف أول سجل ورد يومي بعد تسجيل الدخول.",
       },
     ];
 
@@ -151,21 +163,21 @@
     const cards = [
       {
         tag: "الحلقات",
-        title: "عدد الحلقات",
-        meta: `إجمالي الحلقات: ${groups.length || 0}`,
-        body: "يمكنك إدارة الحلقات وربط الطلاب والأساتذة من لوحة الإدارة.",
+        title: "إجمالي الحلقات",
+        meta: `${groups.length || 0} حلقة`,
+        body: "يمكن إدارة الحلقات وتوزيع الطلبة من نفس البوابة.",
       },
       {
         tag: "الحضور",
         title: "جلسات الحضور",
-        meta: `جلسات مسجلة: ${sessions.length || 0}`,
-        body: "سجّل حضور الطلبة بنقرة واحدة من الهاتف أثناء الحلقة.",
+        meta: `${sessions.length || 0} جلسة`,
+        body: "سجل حضور الطلبة بسهولة خلال الحلقة.",
       },
       {
         tag: "التقييم",
         title: "تقييمات الحفظ",
-        meta: `تقييمات محفوظة: ${assessments.length || 0}`,
-        body: "أضف ملاحظات التجويد والمخارج لتصل مباشرة لولي الأمر لاحقًا.",
+        meta: `${assessments.length || 0} تقييم`,
+        body: "تقييمات التجويد والمخارج متاحة للمتابعة.",
       },
     ];
 
@@ -179,8 +191,8 @@
       {
         tag: "ولي أمر",
         title: "متابعة الأبناء",
-        meta: "لوحة ولي الأمر",
-        body: "سيتم هنا عرض التقييمات والحضور الخاصة بالأبناء فور ربط حساباتهم بملف ولي الأمر.",
+        meta: "قريبًا",
+        body: "سيتم عرض التقييمات والحضور عند ربط حسابات الأبناء.",
       },
     ];
     dashboardContainer.innerHTML = `<div class="grid">${renderCards(cards)}</div>`;
@@ -200,11 +212,11 @@
     let user = null;
     try {
       user = await request("/api/auth/me/", { auth: true });
-    } catch (_) {
+    } catch {
       const refreshed = await refreshAccessToken();
       if (!refreshed) {
         clearSession();
-        sessionInfo.textContent = "انتهت الجلسة. الرجاء تسجيل الدخول مرة أخرى.";
+        sessionInfo.textContent = "انتهت الجلسة. أعد تسجيل الدخول.";
         dashboardContainer.innerHTML = "";
         logoutBtn.classList.add("hidden");
         return;
@@ -235,13 +247,13 @@
 
   if (saveApiBaseBtn) {
     saveApiBaseBtn.addEventListener("click", () => {
-      const value = (apiBaseInput.value || "").trim().replace(/\/+$/, "");
+      const value = normalizeApiBase(apiBaseInput.value || "");
       if (!value) {
-        setStatus(apiStatus, "الرجاء إدخال عنوان صحيح.");
+        setStatus(apiStatus, "الرجاء إدخال عنوان خادم صحيح.");
         return;
       }
       localStorage.setItem(API_BASE_KEY, value);
-      setStatus(apiStatus, `تم حفظ العنوان: ${value}`, true);
+      setStatus(apiStatus, `تم حفظ عنوان الخادم: ${value}`, true);
     });
   }
 
@@ -278,6 +290,7 @@
         role: document.getElementById("regRole").value,
         password: document.getElementById("regPassword").value,
       };
+
       try {
         await request("/api/auth/register/", { method: "POST", body: payload });
         setStatus(registerStatus, "تم إنشاء الحساب. يمكنك تسجيل الدخول الآن.", true);
