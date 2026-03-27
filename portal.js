@@ -4,6 +4,11 @@
   const API_BASE_KEY = "portal_api_base";
   const DEFAULT_API_BASE = "https://association-api-2f1t.onrender.com";
 
+  const registerCard = document.getElementById("registerCard");
+  const loginCard = document.getElementById("loginCard");
+  const switchToLoginBtn = document.getElementById("switchToLoginBtn");
+  const switchToRegisterBtn = document.getElementById("switchToRegisterBtn");
+
   const loginForm = document.getElementById("loginForm");
   const loginStatus = document.getElementById("loginStatus");
   const registerForm = document.getElementById("registerForm");
@@ -42,6 +47,21 @@
     localStorage.removeItem(ACCESS_KEY);
     localStorage.removeItem(REFRESH_KEY);
   };
+
+  const showLogin = () => {
+    registerCard?.classList.add("hidden");
+    loginCard?.classList.remove("hidden");
+    setStatus(registerStatus, "");
+  };
+
+  const showRegister = () => {
+    loginCard?.classList.add("hidden");
+    registerCard?.classList.remove("hidden");
+    setStatus(loginStatus, "");
+  };
+
+  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const isValidPhoneDz = (phone) => /^0[567]\d{8}$/.test(phone);
 
   async function request(path, options = {}) {
     const headers = { "Content-Type": "application/json", ...(options.headers || {}) };
@@ -114,6 +134,7 @@
   async function renderStudentDashboard(user) {
     let dashboard = null;
     let logs = [];
+
     try {
       dashboard = await request("/api/dashboard/student/", { auth: true });
     } catch (err) {
@@ -191,6 +212,7 @@
         body: "سيتم عرض التقييمات والحضور عند ربط حسابات الأبناء.",
       },
     ];
+
     dashboardContainer.innerHTML = `<div class="grid">${renderCards(cards)}</div>`;
     sessionInfo.textContent = `مرحبًا ${user.full_name} | الدور: ${roleName(user.role)}`;
     logoutBtn.classList.remove("hidden");
@@ -237,15 +259,17 @@
     renderGuardianDashboard(user);
   }
 
-  // Ensure production API base exists for all users without manual setup.
   if (!localStorage.getItem(API_BASE_KEY)) {
     localStorage.setItem(API_BASE_KEY, DEFAULT_API_BASE);
   }
 
+  switchToLoginBtn?.addEventListener("click", showLogin);
+  switchToRegisterBtn?.addEventListener("click", showRegister);
+
   if (loginForm) {
     loginForm.addEventListener("submit", async (event) => {
       event.preventDefault();
-      setStatus(loginStatus, "جاري تسجيل الدخول...", true);
+      setStatus(loginStatus, "جارٍ تسجيل الدخول...", true);
       const username = document.getElementById("loginUsername").value.trim();
       const password = document.getElementById("loginPassword").value;
 
@@ -266,20 +290,46 @@
   if (registerForm) {
     registerForm.addEventListener("submit", async (event) => {
       event.preventDefault();
-      setStatus(registerStatus, "جاري إنشاء الحساب...", true);
+
+      const username = document.getElementById("regUsername").value.trim();
+      const fullName = document.getElementById("regFullName").value.trim();
+      const email = document.getElementById("regEmail").value.trim();
+      const rawPhone = document.getElementById("regPhone").value.trim();
+      const phone = rawPhone.replace(/\s+/g, "");
+      const role = document.getElementById("regRole").value;
+      const password = document.getElementById("regPassword").value;
+
+      if (!isValidEmail(email)) {
+        setStatus(registerStatus, "البريد الإلكتروني غير صالح. يجب أن يحتوي على @.");
+        return;
+      }
+
+      if (password.length < 6) {
+        setStatus(registerStatus, "كلمة المرور يجب أن تكون 6 أحرف على الأقل.");
+        return;
+      }
+
+      if (phone && !isValidPhoneDz(phone)) {
+        setStatus(registerStatus, "رقم الهاتف غير صالح. استعمل رقمًا جزائريًا يبدأ بـ 05 أو 06 أو 07.");
+        return;
+      }
+
+      setStatus(registerStatus, "جارٍ إنشاء الحساب...", true);
+
       const payload = {
-        username: document.getElementById("regUsername").value.trim(),
-        full_name: document.getElementById("regFullName").value.trim(),
-        email: document.getElementById("regEmail").value.trim(),
-        phone: document.getElementById("regPhone").value.trim(),
-        role: document.getElementById("regRole").value,
-        password: document.getElementById("regPassword").value,
+        username,
+        full_name: fullName,
+        email,
+        phone,
+        role,
+        password,
       };
 
       try {
         await request("/api/auth/register/", { method: "POST", body: payload });
         setStatus(registerStatus, "تم إنشاء الحساب. يمكنك تسجيل الدخول الآن.", true);
         registerForm.reset();
+        showLogin();
       } catch (err) {
         setStatus(registerStatus, `فشل إنشاء الحساب: ${err.message}`);
       }
